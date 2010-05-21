@@ -1,0 +1,77 @@
+= Ruby CSS Parser
+
+Load, parse and cascade CSS rule sets in Ruby.
+
+=== Setup
+
+Install the gem.
+
+   gem install css_parser
+
+Done.
+
+=== An example
+  require 'css_parser_master'
+  include CssParserMaster
+
+  parser = CssParserMaster::Parser.new
+  parser.load_uri!('http://example.com/styles/style.css')
+
+  # load a remote file, setting the base_uri and media_types
+  parser.load_uri!('../style.css', 'http://example.com/styles/inc/', [:screen, :handheld])
+  
+  # load a local file, setting the base_dir and media_types
+  parser.load_file!('print.css', '~/styles/', :print)
+
+  # lookup a rule by a selector
+  parser.find('#content')
+  #=> 'font-size: 13px; line-height: 1.2;'
+
+  # lookup a rule by a selector and media type
+  parser.find('#content', [:screen, :handheld])
+
+  # iterate through selectors by media type
+  parser.each_selector(:screen) do |sel|
+    puts sel
+    puts sel.selector
+    puts sel.declarations
+    puts sel.specificity
+    ...
+  end
+  
+  # add a block of CSS
+  css = <<-EOT
+    body { margin: 0 1em; }
+  EOT
+
+  parser.add_block!(css)
+
+  # output all CSS rules in a single stylesheet
+  parser.to_s
+  => #content { font-size: 13px; line-height: 1.2; }
+     body { margin: 0 1em; }
+
+=== Testing
+
+You can run the suite of unit tests using <tt>rake test</tt>.
+
+The download/import tests use WEBrick.  The tests set up
+a temporary server on port 12000 and pull down files from the <tt>test/fixtures/</tt> 
+directory.
+
+=== Design notes
+
+The extensions that come with CssParserMaster were created in order to generate a more 'powerful' parse model. 
+This model should provide more powerful and intuitive ways of iterating and operating on the model.
+Mainly Selector and Declaration were added as classes instead of the old version where they were simply hashes and strings. 
+
+=== Credits and code
+
+Original CssParser by Alex Dunae (dunae.ca, e-mail 'code' at the same domain), 2007-10.
+CssParserMaster was created by Kristian Mandrup as an extension of CssParser in order to allow releases of the updated gem with some improvements.
+
+Original project homepage: http://github.com/alexdunae/css_parser
+
+Thanks to {Tyler Cunnion}[http://github.com/tylercunnion] for the updates leading to 1.0.0.
+
+Made on Vancouver Island.

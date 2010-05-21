@@ -1,0 +1,34 @@
+=== Ruby CSS Parser CHANGELOG
+
+==== Version 1.1.2
+ * Extracted declarations API from RuleSet
+ * Added declarations API to both RuleSet and Selector classes
+ * Tests still work!
+
+TODO
+Use enumerables Declarations and Selectors instead of simple string arrays for much greater power and flexibility! 
+
+==== Version 1.1.1
+ * Encapsulated selector into its own class
+ * Encapsulated declaration into its own class
+ * Gem now uses Jewler (new Rakefile.rb created)
+ * All tests work with new selector and declaration iteration strategies which now returns a Selector and Declaration instance
+ 
+==== Version 1.1.0
+ * Added support for local @import
+ * Better remote @import handling
+
+==== Version 1.0.1
+ * Fallback for declartions without sort order
+
+==== Version 1.0.0
+ * Various test fixes and udpate for Ruby 1.9 (thanks to Tyler Cunnion)
+ * Allow setting CSS declarations to nil
+
+==== Version 0.9
+ * Initial version forked from Premailer project
+
+==== TODO: Future
+ * border shorthand/folding support
+ * re-implement caching on CssParser.merge
+ * correctly parse http://www.webstandards.org/files/acid2/test.html
