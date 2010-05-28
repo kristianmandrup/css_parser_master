@@ -21,8 +21,8 @@ module CssParserMaster
     STRIP_HTML_COMMENTS_RX = /\<\!\-\-|\-\-\>/m
 
     # Initial parsing
-    RE_AT_IMPORT_RULE = /\@import[\s]+(url\()?["''"]?(.[^'"\s"']*)["''"]?\)?([\w\s\,^\])]*)\)?;?/
-
+    RE_AT_IMPORT_RULE = /\@import\s*(?:url\s*)?(?:\()?["']?([^'"\s\)]*)["']?\)?([\w\s\,^\])]*)\)?[;\n]?/
+    
     #--
     # RE_AT_IMPORT_RULE = Regexp.new('@import[\s]*(' + RE_STRING.to_s + ')([\w\s\,]*)[;]?', Regexp::IGNORECASE) -- should handle url() even though it is not allowed
     #++
@@ -110,28 +110,28 @@ module CssParserMaster
       end
 
       # Load @imported CSS
-      block.scan(RE_AT_IMPORT_RULE).each do |import_rule|        
+      block.scan(RE_AT_IMPORT_RULE).each do |import_rule|
         media_types = []
-        if media_string = import_rule[import_rule.length-1]
+        if media_string = import_rule[-1]
           media_string.split(/\s|\,/).each do |t|
             media_types << t.to_sym unless t.empty?
           end
         end
 
-        import_path = import_rule[1].to_s.gsub(/['"]*/, '').strip
-        
+        import_path = import_rule[0].to_s.gsub(/['"]*/, '').strip
+
         if options[:base_uri]
           import_uri = URI.parse(options[:base_uri].to_s).merge(import_path)
           load_uri!(import_uri, options[:base_uri], media_types)
         elsif options[:base_dir]
           load_file!(import_path, options[:base_dir], media_types)
-        end     
+        end
       end
 
       # Remove @import declarations
-      block.gsub!(RE_AT_IMPORT_RULE, '')      
+      block.gsub!(RE_AT_IMPORT_RULE, '')
+
       parse_block_into_rule_sets!(block, options)
-      
     end
 
     # Add a CSS rule by setting the +selectors+, +declarations+ and +media_types+.
